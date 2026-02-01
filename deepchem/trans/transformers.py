@@ -2666,10 +2666,27 @@ class RxnSplitTransformer(Transformer):
 
 
 class DataTransformer(Transformer):
-    """A transformer which converts images into different formats, augmentations, etc.
+    """Randomly augments images while preserving their original shape.
 
+    Applies a single augmentation type to each image in the dataset with
+    a given probability. All supported transforms preserve the spatial
+    dimensions of the input, so the output array always has the same
+    shape as the input.
 
+    Supported ``transform_type`` values and their ``transform_params``:
 
+    - ``"flip"`` — Mirror the image. Params: ``direction`` ("lr" or "ud").
+    - ``"rotate"`` — Rotate in-place. Params: ``angle`` (degrees).
+    - ``"gaussian_blur"`` — Blur the image. Params: ``sigma`` (float).
+    - ``"shift"`` — Translate the image. Params: ``width``, ``height`` (int).
+    - ``"gaussian_noise"`` — Additive noise. Params: ``mean``, ``std`` (float).
+    - ``"salt_pepper_noise"`` — Impulse noise. Params: ``prob``, ``salt``,
+      ``pepper`` (float).
+    - ``"median_filter"`` — Denoise filter. Params: ``size`` (int).
+
+    Note
+    ----
+    This class requires scipy and Pillow to be installed.
     """
 
     def __init__(
@@ -2677,15 +2694,20 @@ class DataTransformer(Transformer):
         dataset: Optional[Dataset] = None,
         arguments: Optional[Dict] = None,
     ):
-        """Initialization of DataTransformer
+        """Initializes DataTransformer.
 
         Parameters
         ----------
         dataset: dc.data.Dataset object, optional (default None)
-            Dataset to be transformed
-
+            Dataset to be transformed.
         arguments: Dict, optional (default None)
-            A dictionary containing the transformation type and its parameters.
+            Configuration dictionary with the following keys:
+
+            - ``"transform_type"`` (str): The augmentation to apply.
+            - ``"transform_params"`` (dict): Keyword arguments passed to
+              the underlying transform function.
+            - ``"probability"`` (float): Probability of applying the
+              transform to each image. Default ``1.0``.
         """
         self.arguments = arguments if arguments is not None else {
         }  # assign empty dict if no arguments provided
