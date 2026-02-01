@@ -2663,3 +2663,61 @@ class RxnSplitTransformer(Transformer):
     def untransform(self, z):
         """Not Implemented."""
         raise NotImplementedError("Cannot untransform the source/target split.")
+    
+
+class DataTransformer(Transformer):
+    """A transformer which converts images into different formats, augmentations, etc.
+
+
+
+    """
+
+
+    def __init__(self,
+                 dataset: Optional[Dataset] = None):
+        """Initialization of DataTransformer
+
+        Parameters
+        ----------
+        dataset: dc.data.Dataset object, optional (default None)
+            Dataset to be transformed
+        """
+        super(DataTransformer, self).__init__(transform_X=True,
+                                              dataset=dataset)
+    
+
+    def transform_array(
+        self, X: np.ndarray, y: np.ndarray, w: np.ndarray, ids: np.ndarray
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """Transforms arrays of images using internal methods.
+
+        Parameters
+        ----------
+        X: np.ndarray
+            Array of features
+        y: np.ndarray
+            Array of labels
+        w: np.ndarray
+            Array of weights.
+        ids: np.ndarray
+            Array of identifiers.
+
+        Returns
+        -------
+        Xtrans: np.ndarray
+            Transformed array of features
+        ytrans: np.ndarray
+            Transformed array of labels
+        wtrans: np.ndarray
+            Transformed array of weights
+        idstrans: np.ndarray
+            Transformed array of ids
+        """
+        X_transformed = []
+        for img in X:
+            data_transformer = DataTransforms(img)
+            # Example transformation: convert to grayscale
+            transformed_img = data_transformer.convert2gray()
+            X_transformed.append(transformed_img)
+        X_transformed = np.array(X_transformed)
+        return X_transformed, y, w, ids
