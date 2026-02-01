@@ -41,12 +41,14 @@ class TestDataTransformer(unittest.TestCase):
         # Check that probability=0.0 leaves all images unchanged
         args = {
             "transform_type": "flip",
-            "transform_params": {"direction": "lr"},
+            "transform_params": {
+                "direction": "lr"
+            },
             "probability": 0.0,
         }
         dt = DataTransformer(arguments=args)
-        X_out, _, _, _ = dt.transform_array(
-            self.X.copy(), self.y, self.w, self.ids)
+        X_out, _, _, _ = dt.transform_array(self.X.copy(), self.y, self.w,
+                                            self.ids)
         assert np.allclose(X_out, self.X)
 
     @pytest.mark.tensorflow
@@ -54,12 +56,14 @@ class TestDataTransformer(unittest.TestCase):
         # Check that rotation preserves original image shape
         args = {
             "transform_type": "rotate",
-            "transform_params": {"angle": 45},
+            "transform_params": {
+                "angle": 45
+            },
             "probability": 1.0,
         }
         dt = DataTransformer(arguments=args)
-        X_out, _, _, _ = dt.transform_array(
-            self.X.copy(), self.y, self.w, self.ids)
+        X_out, _, _, _ = dt.transform_array(self.X.copy(), self.y, self.w,
+                                            self.ids)
         assert X_out.shape == self.X.shape
 
     @pytest.mark.tensorflow
@@ -67,7 +71,11 @@ class TestDataTransformer(unittest.TestCase):
         # Check that salt_pepper_noise does not mutate the original array
         args = {
             "transform_type": "salt_pepper_noise",
-            "transform_params": {"prob": 0.05, "salt": 255, "pepper": 0},
+            "transform_params": {
+                "prob": 0.05,
+                "salt": 255,
+                "pepper": 0
+            },
             "probability": 1.0,
         }
         X_original = self.X.copy()

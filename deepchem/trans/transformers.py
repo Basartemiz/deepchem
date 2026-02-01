@@ -2663,7 +2663,7 @@ class RxnSplitTransformer(Transformer):
     def untransform(self, z):
         """Not Implemented."""
         raise NotImplementedError("Cannot untransform the source/target split.")
-    
+
 
 class DataTransformer(Transformer):
     """A transformer which converts images into different formats, augmentations, etc.
@@ -2672,11 +2672,11 @@ class DataTransformer(Transformer):
 
     """
 
-
-    def __init__(self,
-                 dataset: Optional[Dataset] = None,
-                 arguments: Optional[Dict] = None,
-                 ):
+    def __init__(
+        self,
+        dataset: Optional[Dataset] = None,
+        arguments: Optional[Dict] = None,
+    ):
         """Initialization of DataTransformer
 
         Parameters
@@ -2687,10 +2687,9 @@ class DataTransformer(Transformer):
         arguments: Dict, optional (default None)
             A dictionary containing the transformation type and its parameters.
         """
-        self.arguments = arguments if arguments is not None else {} #assign empty dict if no arguments provided
-        super(DataTransformer, self).__init__(transform_X=True,
-                                              dataset=dataset)
-    
+        self.arguments = arguments if arguments is not None else {
+        }  # assign empty dict if no arguments provided
+        super(DataTransformer, self).__init__(transform_X=True, dataset=dataset)
 
     def transform_array(
         self, X: np.ndarray, y: np.ndarray, w: np.ndarray, ids: np.ndarray
@@ -2721,8 +2720,10 @@ class DataTransformer(Transformer):
         """
         X_transformed = []
 
-        #get transformation parameters from arguments dict
-        transform_type = self.arguments.get("transform_type", "convert2gray") #default to convert2gray if not specified
+        # get transformation parameters from arguments dict
+        transform_type = self.arguments.get(
+            "transform_type",
+            "convert2gray")  # default to convert2gray if not specified
         transform_params = self.arguments.get("transform_params", {})
         probability = self.arguments.get("probability", 1.0)
 
@@ -2734,29 +2735,34 @@ class DataTransformer(Transformer):
                 if transform_type == "flip":
                     transformed_img = data_transformer.flip(**transform_params)
                 elif transform_type == "rotate":
-                    transformed_img = scipy.ndimage.rotate(img, **transform_params, reshape=False)
+                    transformed_img = scipy.ndimage.rotate(img,
+                                                           **transform_params,
+                                                           reshape=False)
                 elif transform_type == "gaussian_blur":
-                    transformed_img = data_transformer.gaussian_blur(**transform_params)
+                    transformed_img = data_transformer.gaussian_blur(
+                        **transform_params)
                 elif transform_type == "shift":
                     transformed_img = data_transformer.shift(**transform_params)
                 elif transform_type == "gaussian_noise":
-                    transformed_img = data_transformer.gaussian_noise(**transform_params)
+                    transformed_img = data_transformer.gaussian_noise(
+                        **transform_params)
                 elif transform_type == "salt_pepper_noise":
-                    transformed_img = data_transformer.salt_pepper_noise(**transform_params)
+                    transformed_img = data_transformer.salt_pepper_noise(
+                        **transform_params)
                 elif transform_type == "median_filter":
-                    transformed_img = data_transformer.median_filter(**transform_params)
+                    transformed_img = data_transformer.median_filter(
+                        **transform_params)
                 else:
-                    raise ValueError(f"Unsupported transform_type: {transform_type}")
+                    raise ValueError(
+                        f"Unsupported transform_type: {transform_type}")
             else:
-                transformed_img = img #do not transform
-            
+                transformed_img = img  # do not transform
+
             X_transformed.append(transformed_img)
         X_transformed = np.array(X_transformed)
         return X_transformed, y, w, ids
-    
+
     def untransform(self, z):
         """Not Implemented."""
-        raise NotImplementedError("Cannot untransform datasets with DataTransformer.")
-    
-
-    
+        raise NotImplementedError(
+            "Cannot untransform datasets with DataTransformer.")
